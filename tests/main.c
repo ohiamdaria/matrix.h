@@ -25,7 +25,7 @@ void run_testcase(Suite *testcase) {
 }
 
 void run_tests(void) {
-    Suite *list_cases[] = {/*suite_s21_create_matrix(),
+    Suite *list_cases[] = {suite_s21_create_matrix(),
                            suite_s21_eq_matrix(),
                            suite_s21_sum_matrix(),
                            suite_s21_sub_matrix(),
@@ -33,7 +33,7 @@ void run_tests(void) {
                            suite_s21_mult_matrix(),
                            suite_s21_transpose_matrix(),
                            suite_s21_calc_complements(),
-                           suite_s21_determinant(),*/
+                           suite_s21_determinant(),
                            suite_s21_inverse_matrix(),
                            NULL};
 

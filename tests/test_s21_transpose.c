@@ -26,11 +26,25 @@ START_TEST(transpose_matrix) {
     s21_remove_matrix(&check);
 }
 END_TEST
+
+
+START_TEST(transpose_error) {
+    matrix_t m = {0};
+    matrix_t mtx = {0};
+    s21_create_matrix(0, -6, &mtx);
+    
+    ck_assert_int_eq(s21_transpose(&mtx, &m), MATRIX_ERROR);
+
+    s21_remove_matrix(&mtx);
+}
+END_TEST
+
 Suite *suite_s21_transpose_matrix(void) {
     Suite *s = suite_create("suite_s21_transpose_matrix");
     TCase *tc = tcase_create("s21_transpose_matrix");
 
     tcase_add_loop_test(tc, transpose_matrix, 0, 1000);
+    tcase_add_test(tc, transpose_error);
 
     suite_add_tcase(s, tc);
     return s;

@@ -26,7 +26,7 @@ START_TEST(s21_inverse_2) {
     int res = s21_eq_matrix(&B, &C);
     ck_assert_int_eq(res, 1);
     s21_remove_matrix(&A);
-    s21_remove_matrix(&B);
+
     s21_remove_matrix(&C);
 }
 
@@ -106,7 +106,7 @@ START_TEST(test_not_sqare) {
     if (!codec) {
         int code = s21_inverse_matrix(&m, &result);
         ck_assert_int_eq(code, ARITHM_ERROR);
-        s21_remove_matrix(&m);
+        // s21_remove_matrix(&m);
     }
 }
 END_TEST
@@ -194,6 +194,25 @@ START_TEST(inverse) {
 }
 END_TEST
 
+START_TEST(inverse_matrix_error) {
+    // const int rows = 2;
+    // const int cols = 1;
+    matrix_t m = {0};
+    matrix_t mtx = {0};
+    s21_create_matrix(0, -6, &mtx);
+
+    // for (int i = 0; i < rows; i++) {
+    //     for (int j = 0; j < cols; j++) {
+    //         mtx.matrix[i][j] = get_rand(DBL_MIN, DBL_MAX);
+    //     }
+    // }
+    
+    ck_assert_int_eq(s21_inverse_matrix(&mtx, &m), ARITHM_ERROR);
+
+    s21_remove_matrix(&mtx);
+}
+END_TEST
+
 Suite *suite_s21_inverse_matrix(void) {
     Suite *s = suite_create("suite_s21_inverse_matrix");
     TCase *tc = tcase_create("s21_inverse_matrix");
@@ -207,6 +226,7 @@ Suite *suite_s21_inverse_matrix(void) {
     tcase_add_test(tc, test_zero_det);
     tcase_add_test(tc, test_incorrect);
     tcase_add_test(tc, test_one_by_one);
+    tcase_add_test(tc, inverse_matrix_error);
 
     suite_add_tcase(s, tc);
     return s;

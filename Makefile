@@ -1,54 +1,55 @@
-CC	=	gcc -g #-fsanitize=address
-CFLAGS	=	-c	-Wall	-Werror	-Wextra	-std=c11	-pedantic #-fanalyzer
-LIB_NAME	=	s21_matrix.a
-TEST = -o test -lcheck
-LFLAGS	=	-lcheck	-lm	-lpthread
-RFLAGS	=	-fprofile-arcs	-ftest-coverage
-HELP = all_helpers.c
-ALLFILE = s21_create_matrix.c s21_remove_matrix.c s21_eq_matrix.c s21_sum_matrix.c s21_sub_matrix.c s21_mult_number.c s21_mult_matrix.c s21_transpose.c s21_calc_complements.c s21_determinant.c s21_inverse_matrix.c
+CC	=	gcc
+CFLAGS	= -Wall -Werror -Wextra -std=c11 -pedantic
+LIB_NAME = s21_matrix.a
+LFLAGS = -lcheck -lm -lpthread
+RFLAGS = -fprofile-arcs	-ftest-coverage
+HELP = s21_all_helpers.c
 
-all: s21_matrix.a test 
+TST=tests/
+TFILE=runtest
 
-s21_matrix.a:
-	$(CC)	$(CFLAGS) $(HELP)
-	$(CC)	$(CFLAGS) $(ALLFILE)
-	ar	rcs	$(LIB_NAME)	*.o
+INC:=$(shell find . -maxdepth 1 -name "*.h")
+SRC:=$(shell find . -maxdepth 1 -name "s21*.c")
+OBJS:=$(SRC:%.c=%.o)
+
+all: $(LIB_NAME)
+
+$(OBJS): %.o:%.c $(SRC) $(INC)
+	$(CC) $(CFLAGS) $(RFLAGS) -o $@ -c $< -g
+
+$(LIB_NAME):	$(OBJS)
+	ar	-vrcs	$(LIB_NAME)	$(OBJS)
 	ranlib	$(LIB_NAME)
-	rm	-r	*.o
 
-clean:
-	rm	-rf	*.o	*.out	*.gcno	*.gcna	*.html	*.gcda	*.css	*.exe
-	rm	-rf	*.a
-	rm -rf tests/runtest
-	rm -rf *.txt
+test: $(LIB_NAME)
+	$(CC)	$(CFLAGS)	-c	$(TST)*.c
+	$(CC)   $(RFLAGS) *.o	$(LIB_NAME)	$(LFLAGS)	-o	$(TST)$(TFILE)
+	$(TST)$(TFILE)
 
-rebuild:	clean	s21_matrix.a
-
-test: 
-	$(CC)	$(CFLAGS)	-c	tests/*.c
-	$(CC) *.o	s21_matrix.a	$(LFLAGS)	-o	tests/runtest
-	tests/runtest
-
-gcov_report:
+gcov_report: clean test
 	gcovr	-r	.	--html	--html-details	-o	coverage_report.html
 	rm	-rf	*.o	*.out	*.gcno	*.gcna	*gcda
+	open	./coverage_report.html
+
+clean:
+	rm	-rf	*.o	*.out *.gcno *.gcna	*.html *.gcda *.css	*.exe
+	rm	-rf	*.a $(TST)$(TFILE) *.txt
+
+rebuild:	clean	$(LIB_NAME)
 
 check:
-	cppcheck *.h functions/*.c
+	cppcheck *.h *.c
 	cp ../materials/linters/CPPLINT.cfg CPPLINT.cfg
-	python3 ../materials/linters/cpplint.py --extensions=c *.h functions/*.c
+	python3 ../materials/linters/cpplint.py --extensions=c *.h *.c
 	rm -rf ./CPPLINT*
-
-leaks:
-		CK_FORK=no leaks --atExit -- tests/runtest
-
 
 docker:
 	sh ../materials/build/run.sh
 
-valgrind:
-		valgrind -q --leak-check=yes tests/runtest
-
-
-
-
+valgrind: s21_matrix.a test
+	valgrind --leak-check=full \
+     --show-leak-kinds=all \
+     --track-origins=yes \
+     --verbose \
+     --log-file=valgrind-out.txt \
+     tests/runtest

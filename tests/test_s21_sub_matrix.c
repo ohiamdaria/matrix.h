@@ -29,36 +29,25 @@ START_TEST(sub_matrix) {
 }
 END_TEST
 
-START_TEST(test_inf) {
+START_TEST(sub_matrix_error) {
     const int rows = rand() % 100 + 1;
     const int cols = rand() % 100 + 1;
     matrix_t m = {0};
-    s21_create_matrix(rows, cols, &m);
     matrix_t mtx = {0};
     s21_create_matrix(rows, cols, &mtx);
-    matrix_t check = {0};
-    s21_create_matrix(rows, cols, &check);
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            m.matrix[i][j] = get_rand(DBL_MIN, DBL_MAX);
             mtx.matrix[i][j] = get_rand(DBL_MIN, DBL_MAX);
-            check.matrix[i][j] = m.matrix[i][j] - mtx.matrix[i][j];
         }
     }
-    if (rows + cols > 3)
-        m.matrix[1][1] = INFINITY;
-    else if (rows + cols > 10)
-        m.matrix[5][5] = NAN;
-
     matrix_t res = {0};
     
-    ck_assert_int_eq(s21_sub_matrix(&m, &mtx, &res), ARITHM_ERROR);
+    ck_assert_int_eq(s21_sub_matrix(&m, &mtx, &res), MATRIX_ERROR);
 
-    s21_remove_matrix(&m);
+    // s21_remove_matrix(&m);
     s21_remove_matrix(&mtx);
     s21_remove_matrix(&res);
-    s21_remove_matrix(&check);
 }
 END_TEST
 
@@ -66,8 +55,8 @@ Suite *suite_s21_sub_matrix(void) {
     Suite *s = suite_create("suite_s21_sub_matrix");
     TCase *tc = tcase_create("s21_sub_matrix");
 
-    tcase_add_loop_test(tc, sub_matrix, 0, 10);
-    tcase_add_test(tc, test_inf);
+    tcase_add_loop_test(tc, sub_matrix, 0, 100);
+    tcase_add_test(tc, sub_matrix_error);
 
     suite_add_tcase(s, tc);
     return s;

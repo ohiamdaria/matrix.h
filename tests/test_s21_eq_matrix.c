@@ -41,12 +41,33 @@ START_TEST(not_eq) {
 }
 END_TEST
 
+START_TEST(eq_matrix_error) {
+    const int rows = rand() % 100 + 1;
+    const int cols = rand() % 100 + 1;
+    matrix_t m = {0};
+    matrix_t mtx = {0};
+    s21_create_matrix(rows, cols, &mtx);
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            mtx.matrix[i][j] = get_rand(DBL_MIN, DBL_MAX);
+        }
+    }
+    
+    ck_assert_int_eq(s21_eq_matrix(&m, &mtx), MATRIX_ERROR);
+
+    // s21_remove_matrix(&m);
+    s21_remove_matrix(&mtx);
+}
+END_TEST
+
 Suite *suite_s21_eq_matrix(void) {
     Suite *s = suite_create("suite_s21_eq_matrix");
     TCase *tc = tcase_create("s21_eq_matrix");
 
     tcase_add_test(tc, not_eq);
     tcase_add_loop_test(tc, eq_matrix, 0, 100);
+    tcase_add_test(tc, eq_matrix_error);
 
     suite_add_tcase(s, tc);
     return s;
