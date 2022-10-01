@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 typedef struct matrix_struct {
   double **matrix;
   int rows;
