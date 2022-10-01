@@ -1,27 +1,23 @@
 #ifndef SRC_S21_MATRIX_H_
 #define SRC_S21_MATRIX_H_
 
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+
 typedef struct matrix_struct {
-    double** matrix;
-    int rows;
-    int columns;
+  double **matrix;
+  int rows;
+  int columns;
 } matrix_t;
 
-typedef enum {
-    OK,
-    MATRIX_ERROR,
-    ARITHM_ERROR,
-    MALLOC_ERROR
-} error;
+typedef enum { OK, MATRIX_ERROR, ARITHM_ERROR, MALLOC_ERROR } error;
 
 #define SUCCESS 1
 #define FAILURE 0
-#define MAX(a, b) (((a) > (b))?(a):(b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 //  main functions
 int s21_create_matrix(int rows, int columns, matrix_t *result);
@@ -54,8 +50,7 @@ double counter_determinant(matrix_t *A, int n);
 void minor(matrix_t *A, matrix_t *minor_matrix);
 int is_agreed(matrix_t *A, matrix_t *B);
 int simple_mul(matrix_t *A, matrix_t *B, double *result,
-unsigned int current_row, unsigned int current_column);
+               unsigned int current_row, unsigned int current_column);
 int check_number(double number);
-
 
 #endif  // SRC_S21_MATRIX_H_
