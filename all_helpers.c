@@ -1,13 +1,13 @@
 #include "s21_matrix.h"
 
-// void print_matrix(matrix_t *result) {
-//     for (int i = 0; i < result->rows; i++) {
-//         for (int j = 0; j < result->columns; j++) {
-//             printf("%.10f ", result->matrix[i][j]);
-//         }
-//         printf("\n");
-//     }
-// }
+void print_matrix(matrix_t *result) {
+    for (int i = 0; i < result->rows; i++) {
+        for (int j = 0; j < result->columns; j++) {
+            printf("%.10f ", result->matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 int check_size(matrix_t *A, matrix_t *B) {
     int status = SUCCESS;
@@ -23,11 +23,11 @@ int check_norm_value(double result) {
     return status;
 }
 
-// void scanf_matrix(matrix_t *result) {
-//     for (int i = 0; i < result->rows; i++)
-//         for (int j = 0; j < result->columns; j++)
-//             scanf("%lf\n", &result->matrix[i][j]);
-// }
+void scanf_matrix(matrix_t *result) {
+    for (int i = 0; i < result->rows; i++)
+        for (int j = 0; j < result->columns; j++)
+            scanf("%lf\n", &result->matrix[i][j]);
+}
 
 int check_size_one(matrix_t *A) {
     int status = SUCCESS;
@@ -50,17 +50,17 @@ int is_square(matrix_t *A) {
     return status;
 }
 
-// int copy_matrix(matrix_t *A, matrix_t *B) {
-//     int status = check_size(A, B);
-//     if (status) {
-//         for (int i = 0; i < A->rows; i++)
-//             for (int j = 0; j < A->columns; j++)
-//                 B->matrix[i][j] = A->matrix[i][j];
-//     } else {
-//         status = FAILURE;
-//     }
-//     return status;
-// }
+int copy_matrix(matrix_t *A, matrix_t *B) {
+    int status = check_size(A, B);
+    if (status) {
+        for (int i = 0; i < A->rows; i++)
+            for (int j = 0; j < A->columns; j++)
+                B->matrix[i][j] = A->matrix[i][j];
+    } else {
+        status = FAILURE;
+    }
+    return status;
+}
 
 void submatrix(matrix_t *A, matrix_t *copy, int rows_copy, int columns_copy) {
     s21_create_matrix(A->rows - 1, A->columns - 1, copy);

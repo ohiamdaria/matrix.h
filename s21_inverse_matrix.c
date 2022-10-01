@@ -3,8 +3,8 @@
 int s21_inverse_matrix(matrix_t *A, matrix_t *result) {
     double det = 0.0;
     int status = s21_determinant(A, &det);
+    if (fabs(det) < 1e-7 || (A->columns != A->rows)) status = ARITHM_ERROR;
 
-    if ((fabs(det) < 1e-7 || (A->columns != A->rows)) && !status) status = ARITHM_ERROR;
     if (!status) {
         if (A->rows == 1 && A->columns == 1) {
             s21_create_matrix(1, 1, result);
@@ -21,5 +21,6 @@ int s21_inverse_matrix(matrix_t *A, matrix_t *result) {
     if (!check_size_one(A)) {
         status = MATRIX_ERROR;
     }
+
     return status;
 }

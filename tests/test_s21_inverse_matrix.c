@@ -207,7 +207,7 @@ START_TEST(inverse_matrix_error) {
     //     }
     // }
     
-    ck_assert_int_eq(s21_inverse_matrix(&mtx, &m), ARITHM_ERROR);
+    ck_assert_int_eq(s21_inverse_matrix(&mtx, &m), MATRIX_ERROR);
 
     s21_remove_matrix(&mtx);
 }

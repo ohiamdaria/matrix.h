@@ -1,10 +1,10 @@
 CC	=	gcc
 CFLAGS	= -Wall -Werror -Wextra -std=c11 -pedantic
 LIB_NAME = s21_matrix.a
+PLIB_NAME = s21_matrix_peer.a
 LFLAGS = -lcheck -lm -lpthread
 RFLAGS = -fprofile-arcs	-ftest-coverage
 HELP = s21_all_helpers.c
-
 TST=tests/
 TFILE=runtest
 
@@ -14,10 +14,12 @@ OBJS:=$(SRC:%.c=%.o)
 
 all: $(LIB_NAME)
 
+TEST=ON
+
 $(OBJS): %.o:%.c $(SRC) $(INC)
 	$(CC) $(CFLAGS) $(RFLAGS) -o $@ -c $< -g
 
-$(LIB_NAME):	$(OBJS)
+$(LIB_NAME): 	$(OBJS)
 	ar	-vrcs	$(LIB_NAME)	$(OBJS)
 	ranlib	$(LIB_NAME)
 
@@ -37,19 +39,14 @@ clean:
 
 rebuild:	clean	$(LIB_NAME)
 
-check:
-	cppcheck *.h *.c
+cppcheck:
+	cppcheck --enable=all --suppress=missingIncludeSystem *.c
 	cp ../materials/linters/CPPLINT.cfg CPPLINT.cfg
 	python3 ../materials/linters/cpplint.py --extensions=c *.h *.c
 	rm -rf ./CPPLINT*
 
-docker:
+docker: clean
 	sh ../materials/build/run.sh
 
-valgrind: s21_matrix.a test
-	valgrind --leak-check=full \
-     --show-leak-kinds=all \
-     --track-origins=yes \
-     --verbose \
-     --log-file=valgrind-out.txt \
-     tests/runtest
+valgrind: compile_test
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose tests/runtest)
