@@ -12,10 +12,20 @@ int s21_inverse_matrix(matrix_t *A, matrix_t *result) {
       result->matrix[0][0] = (double)1 / A->matrix[0][0];
     } else {
       matrix_t mat2;
+      init_matrix(&mat2);
       minor(A, &mat2);
       matrix_t mat3;
-      status = MAX(s21_transpose(&mat2, &mat3),
-                   s21_mult_number(&mat3, (double)1 / det, result));
+      init_matrix(&mat3);
+      if (!s21_transpose(&mat2, &mat3)) {
+        if (!s21_mult_number(&mat3, (double)1 / det, result)) {
+	  status = OK;
+	} else {
+	  s21_remove_matrix(result);
+	  status = ARITHM_ERROR;
+	}
+      } else {
+        status = MATRIX_ERROR;
+      }
       s21_remove_matrix(&mat3);
       s21_remove_matrix(&mat2);
     }

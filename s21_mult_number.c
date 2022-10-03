@@ -9,6 +9,8 @@ int s21_mult_number(matrix_t *A, double number, matrix_t *result) {
         for (int j = 0; j < A->columns; j++) {
           result->matrix[i][j] = A->matrix[i][j] * number;
         }
+    } else {
+      status = MALLOC_ERROR;
     }
   }
   return status;
