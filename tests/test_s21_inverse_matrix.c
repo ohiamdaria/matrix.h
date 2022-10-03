@@ -26,7 +26,7 @@ START_TEST(s21_inverse_2) {
     int res = s21_eq_matrix(&B, &C);
     ck_assert_int_eq(res, 1);
     s21_remove_matrix(&A);
-
+    s21_remove_matrix(&B);
     s21_remove_matrix(&C);
 }
 
@@ -59,7 +59,7 @@ START_TEST(s21_inverse_1) {
     int res = s21_eq_matrix(&B, &C);
     ck_assert_int_eq(res, 1);
     s21_remove_matrix(&A);
-   
+    s21_remove_matrix(&B);
     s21_remove_matrix(&C);
 }
 END_TEST
@@ -106,7 +106,7 @@ START_TEST(test_not_sqare) {
     if (!codec) {
         int code = s21_inverse_matrix(&m, &result);
         ck_assert_int_eq(code, ARITHM_ERROR);
-        // s21_remove_matrix(&m);
+        s21_remove_matrix(&m);
     }
 }
 END_TEST
@@ -114,8 +114,8 @@ END_TEST
 START_TEST(test_normal) {
     matrix_t m = {0};
     matrix_t expected = {0};
-    int codec1, codec2;
-    codec1 = s21_create_matrix(3, 3, &m);
+    int codec2;
+    int codec1 = s21_create_matrix(3, 3, &m);
     if (!codec1)
         codec2 = s21_create_matrix(3, 3, &expected);
 
@@ -208,8 +208,6 @@ START_TEST(inverse_matrix_error) {
     // }
     
     ck_assert_int_eq(s21_inverse_matrix(&mtx, &m), MATRIX_ERROR);
-
-    s21_remove_matrix(&mtx);
 }
 END_TEST
 

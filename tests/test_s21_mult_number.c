@@ -16,9 +16,9 @@ START_TEST(mult_number_matrix) {
         }
     }
     matrix_t res = {0};
-    s21_mult_number(&m, mult_number, &res);
+    int a = s21_mult_number(&m, mult_number, &res);
 
-    ck_assert_int_eq(s21_mult_number(&m, mult_number, &res), OK);
+    ck_assert_int_eq(a, OK);
     ck_assert_int_eq(s21_eq_matrix(&check, &res), SUCCESS);
     s21_remove_matrix(&m);
     s21_remove_matrix(&res);
@@ -34,8 +34,8 @@ START_TEST(test2) {
     s21_create_matrix(rows, cols, &m);
 
     matrix_t res = {0};
-    s21_mult_number(&m, number, &res);
-    ck_assert_int_eq(s21_mult_number(&m, number, &res), MATRIX_ERROR);
+    int a = s21_mult_number(&m, number, &res);
+    ck_assert_int_eq(a, MATRIX_ERROR);
     s21_remove_matrix(&m);
 }
 END_TEST
