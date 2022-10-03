@@ -37,7 +37,6 @@ START_TEST(test2) {
     s21_mult_number(&m, number, &res);
     ck_assert_int_eq(s21_mult_number(&m, number, &res), MATRIX_ERROR);
     s21_remove_matrix(&m);
-    s21_remove_matrix(&res);
 }
 END_TEST
 

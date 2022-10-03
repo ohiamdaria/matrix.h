@@ -47,7 +47,6 @@ START_TEST(sub_matrix_error) {
 
     // s21_remove_matrix(&m);
     s21_remove_matrix(&mtx);
-    s21_remove_matrix(&res);
 }
 END_TEST
 

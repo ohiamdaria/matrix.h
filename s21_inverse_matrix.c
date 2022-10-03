@@ -3,6 +3,7 @@
 int s21_inverse_matrix(matrix_t *A, matrix_t *result) {
   double det = 0.0;
   int status = s21_determinant(A, &det);
+  init_matrix(result);
   if (fabs(det) < 1e-7 || (A->columns != A->rows)) status = ARITHM_ERROR;
 
   if (!status) {

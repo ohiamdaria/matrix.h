@@ -18,7 +18,6 @@ START_TEST(sum_matrix) {
         }
     }
     matrix_t res = {0};
-    s21_sum_matrix(&m, &mtx, &res);
     ck_assert_int_eq(s21_sum_matrix(&m, &mtx, &res), OK);
     ck_assert_int_eq(s21_eq_matrix(&check, &res), SUCCESS);
     s21_remove_matrix(&m);
@@ -46,7 +45,6 @@ START_TEST(sum_matrix_error) {
 
     // s21_remove_matrix(&m);
     s21_remove_matrix(&mtx);
-    s21_remove_matrix(&res);
 }
 END_TEST
 

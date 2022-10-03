@@ -51,5 +51,6 @@ int is_agreed(matrix_t *A, matrix_t *B);
 int simple_mul(matrix_t *A, matrix_t *B, double *result,
                unsigned int current_row, unsigned int current_column);
 int check_number(double number);
+void init_matrix(matrix_t *A);
 
 #endif  // SRC_S21_MATRIX_H_

@@ -7,14 +7,15 @@ RFLAGS = -fprofile-arcs	-ftest-coverage
 HELP = s21_all_helpers.c
 TST=tests/
 TFILE=runtest
+ifeq	($(shell uname), Linux)
+LFLAGS	=	-lcheck_pic	$(shell	pkg-config	--libs	check)	-lpthread	-lrt	-lm	-lsubunit
+endif
 
 INC:=$(shell find . -maxdepth 1 -name "*.h")
 SRC:=$(shell find . -maxdepth 1 -name "s21*.c")
 OBJS:=$(SRC:%.c=%.o)
 
-all: $(LIB_NAME)
-
-TEST=ON
+all: $(LIB_NAME) test
 
 $(OBJS): %.o:%.c $(SRC) $(INC)
 	$(CC) $(CFLAGS) $(RFLAGS) -o $@ -c $< -g
@@ -48,5 +49,5 @@ cppcheck:
 docker: clean
 	sh ../materials/build/run.sh
 
-valgrind: compile_test
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose tests/runtest)
+valgrind: test
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose tests/runtest

@@ -2,8 +2,8 @@
 
 int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
   int status = is_agreed(A, B);
+  init_matrix(result);
   if (status) {
-    status = OK;
     status = s21_create_matrix(A->rows, A->rows, result);
     if (!status) {
       for (int i = 0; i < A->rows; i++)
