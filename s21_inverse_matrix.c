@@ -18,11 +18,11 @@ int s21_inverse_matrix(matrix_t *A, matrix_t *result) {
       init_matrix(&mat3);
       if (!s21_transpose(&mat2, &mat3)) {
         if (!s21_mult_number(&mat3, (double)1 / det, result)) {
-	  status = OK;
-	} else {
-	  s21_remove_matrix(result);
-	  status = ARITHM_ERROR;
-	}
+          status = OK;
+        } else {
+          s21_remove_matrix(result);
+          status = ARITHM_ERROR;
+        }
       } else {
         status = MATRIX_ERROR;
       }

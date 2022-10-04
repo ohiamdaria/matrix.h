@@ -9,21 +9,21 @@ int s21_create_matrix(int rows, int columns, matrix_t *result) {
     result->columns = columns;
     result->matrix = (double **)calloc(result->rows, sizeof(double *));
     if (result->matrix) {
-      for (int i = 0, stop = 0; i < rows && !stop; i++) {
+      for (int i = 0; i < rows; i++) {
         result->matrix[i] = (double *)calloc(result->columns, sizeof(double));
         if (result->matrix[i] == NULL) {
-          for (int j = i - 1; j >= 0; j--) {
-            free(result->matrix[j]);
+          while (i - 1 >= 0) {
+            free(result->matrix[i]);
+            i--;
           }
           free(result->matrix);
-          stop = 1;
-	status = MALLOC_ERROR;
+          status = MALLOC_ERROR;
+          break;
+        }
       }
-    }
     } else {
       status = MALLOC_ERROR;
     }
   }
-
   return status;
 }
