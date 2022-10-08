@@ -1,4 +1,4 @@
-#include "test_s21_matrix.h"
+#include "test.h"
 
 START_TEST(s21_calc_compl_2) {
     matrix_t a = {0};

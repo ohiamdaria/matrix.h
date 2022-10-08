@@ -2,16 +2,18 @@
 
 int check_size(matrix_t *A, matrix_t *B) {
   int status = SUCCESS;
-  if (A->columns != B->columns || A->rows != B->rows) status = FAILURE;
+  if (A->columns != B->columns || A->rows != B->rows) {
+    status = FAILURE;
+  }
   return status;
 }
 
-int check_norm_value(double result) {
-  int status = SUCCESS;
-  if (result == INFINITY || result == -INFINITY || result == NAN)
-    status = FAILURE;
-  return status;
-}
+// int check_norm_value(double result) {
+//   int status = SUCCESS;
+//   if (result == INFINITY || result == -INFINITY || result == NAN)
+//     status = FAILURE;
+//   return status;
+// }
 
 int check_size_one(matrix_t *A) {
   int status = SUCCESS;

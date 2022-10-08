@@ -1,4 +1,4 @@
-#include "test_s21_matrix.h"
+#include "test.h"
 
 START_TEST(mult_number_matrix) {
     const int rows = rand() % 100 + 1;

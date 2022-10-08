@@ -1,4 +1,4 @@
-#include "test_s21_matrix.h"
+#include "test.h"
 
 START_TEST(eq_matrix) {
     const int rows = rand() % 100 + 1;

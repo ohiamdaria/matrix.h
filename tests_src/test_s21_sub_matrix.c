@@ -1,6 +1,6 @@
-#include "test_s21_matrix.h"
+#include "test.h"
 
-START_TEST(sum_matrix) {
+START_TEST(sub_matrix) {
     const int rows = rand() % 100 + 1;
     const int cols = rand() % 100 + 1;
     matrix_t m = {0};
@@ -12,14 +12,16 @@ START_TEST(sum_matrix) {
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            m.matrix[i][j] = get_rand(-6e6, 6e6);
-            mtx.matrix[i][j] = get_rand(-6e6, 6e6);
-            check.matrix[i][j] = m.matrix[i][j] + mtx.matrix[i][j];
+            m.matrix[i][j] = get_rand(DBL_MIN, DBL_MAX);
+            mtx.matrix[i][j] = get_rand(DBL_MIN, DBL_MAX);
+            check.matrix[i][j] = m.matrix[i][j] - mtx.matrix[i][j];
         }
     }
     matrix_t res = {0};
-    ck_assert_int_eq(s21_sum_matrix(&m, &mtx, &res), OK);
+    
+    ck_assert_int_eq(s21_sub_matrix(&m, &mtx, &res), OK);
     ck_assert_int_eq(s21_eq_matrix(&check, &res), SUCCESS);
+
     s21_remove_matrix(&m);
     s21_remove_matrix(&mtx);
     s21_remove_matrix(&res);
@@ -27,7 +29,7 @@ START_TEST(sum_matrix) {
 }
 END_TEST
 
-START_TEST(sum_matrix_error) {
+START_TEST(sub_matrix_error) {
     const int rows = rand() % 100 + 1;
     const int cols = rand() % 100 + 1;
     matrix_t m = {0};
@@ -41,19 +43,19 @@ START_TEST(sum_matrix_error) {
     }
     matrix_t res = {0};
     
-    ck_assert_int_eq(s21_sum_matrix(&m, &mtx, &res), MATRIX_ERROR);
+    ck_assert_int_eq(s21_sub_matrix(&m, &mtx, &res), MATRIX_ERROR);
 
     // s21_remove_matrix(&m);
     s21_remove_matrix(&mtx);
 }
 END_TEST
 
-Suite *suite_s21_sum_matrix(void) {
-    Suite *s = suite_create("suite_s21_sum_matrix");
-    TCase *tc = tcase_create("s21_sum_matrix");
+Suite *suite_s21_sub_matrix(void) {
+    Suite *s = suite_create("suite_s21_sub_matrix");
+    TCase *tc = tcase_create("s21_sub_matrix");
 
-    tcase_add_loop_test(tc, sum_matrix, 0, 100);
-    tcase_add_test(tc, sum_matrix_error);
+    tcase_add_loop_test(tc, sub_matrix, 0, 100);
+    tcase_add_test(tc, sub_matrix_error);
 
     suite_add_tcase(s, tc);
     return s;

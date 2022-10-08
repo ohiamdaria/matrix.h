@@ -1,4 +1,4 @@
-#include "test_s21_matrix.h"
+#include "test.h"
 
 START_TEST(determinant1) {
     const int size = 5;

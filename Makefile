@@ -1,53 +1,86 @@
-CC	=	gcc
-CFLAGS	= -Wall -Werror -Wextra -std=c11 -pedantic
-LIB_NAME = s21_matrix.a
-PLIB_NAME = s21_matrix_peer.a
-LFLAGS = -lcheck -lm -lpthread
-RFLAGS = -fprofile-arcs	-ftest-coverage
-HELP = s21_all_helpers.c
-TST=tests/
-TFILE=runtest
-ifeq	($(shell uname), Linux)
-LFLAGS	=	-lcheck_pic	$(shell	pkg-config	--libs	check)	-lpthread	-lrt	-lm	-lsubunit
-endif
+CC          := gcc
+WARNINGS    := -Wall -Werror -Wextra 
+CFLAGS      := -std=c11 -pedantic $(WARNINGS)
+INC_CHECK   ?= $(shell pkg-config --cflags check)
+LFLAGS      ?= $(shell pkg-config --cflags --libs check) 
+TEST_FLAGS  := --coverage -c -g
 
-INC:=$(shell find . -maxdepth 1 -name "*.h")
-SRC:=$(shell find . -maxdepth 1 -name "s21*.c")
-OBJS:=$(SRC:%.c=%.o)
+OBJ_DIR     := obj
+TEST_SRC_DIR:= tests_src
+TEST_OBJ_DIR:= tests_obj
+GCOV_OBJ_DIR:= gcov_res
 
-all: $(LIB_NAME) test
+TEST_SRC  := $(shell find $(TEST_SRC_DIR) -maxdepth 1 -name "*.c")
+MATRIX_SRC  := $(wildcard s21*.c)
 
-$(OBJS): %.o:%.c $(SRC) $(INC)
-	$(CC) $(CFLAGS) $(RFLAGS) -o $@ -c $< -g
+TEST_OBJ  := $(addprefix $(TEST_OBJ_DIR)/, $(notdir $(TEST_SRC:.c=.o)))
+MATRIX_OBJ  := $(addprefix $(OBJ_DIR)/, $(patsubst %.c, %.o, $(MATRIX_SRC)))
+GCOV_OBJ  := $(addprefix $(GCOV_OBJ_DIR)/, $(patsubst %.c, %.o, $(MATRIX_SRC)))
 
-$(LIB_NAME): 	$(OBJS)
-	ar	-vrcs	$(LIB_NAME)	$(OBJS)
-	ranlib	$(LIB_NAME)
+MATRIX_TEST := matrix_test.c
 
-test: $(LIB_NAME)
-	$(CC)	$(CFLAGS)	-c	$(TST)*.c
-	$(CC)   $(RFLAGS) *.o	$(LIB_NAME)	$(LFLAGS)	-o	$(TST)$(TFILE)
-	$(TST)$(TFILE)
+all: s21_matrix.a 
 
-gcov_report: clean test
+test: s21_matrix.a $(TEST_OBJ_DIR)/main.o $(TEST_OBJ)
+	$(CC) $(LFLAGS) $(TEST_OBJ) $(TEST_OBJ_DIR)/main.o s21_matrix.a -o test
+	- ./test
+
+s21_matrix.a: $(MATRIX_OBJ)
+	ar rc s21_matrix.a $(MATRIX_OBJ)
+	ranlib 	s21_matrix.a
+
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+$(TEST_OBJ_DIR)/main.o: $(MATRIX_TEST) 
+	@mkdir -p $(TEST_OBJ_DIR)
+	$(CC)  $(INC_CHECK) -c -o $(TEST_OBJ_DIR)/main.o $(MATRIX_TEST)
+
+$(TEST_OBJ_DIR)/%.o: $(TEST_SRC_DIR)/%.c
+	@mkdir -p $(TEST_OBJ_DIR)
+	$(CC) $(INC_CHECK) -c $^ -o $@
+
+
+gcov_report: $(TEST_OBJ_DIR)/main.o $(GCOV_OBJ) $(MATRIX_SRC)
+	ar rc s21_matrix.a $(GCOV_OBJ)
+	ranlib 	s21_matrix.a
+	$(CC) $(LFLAGS) --coverage $(TEST_OBJ) $(TEST_OBJ_DIR)/main.o s21_matrix.a -o test
+	- ./test
 	gcovr	-r	.	--html	--html-details	-o	coverage_report.html
 	rm	-rf	*.o	*.out	*.gcno	*.gcna	*gcda
 	open	./coverage_report.html
 
-clean:
+
+$(GCOV_OBJ_DIR)/%.o: %.c
+	@mkdir -p $(GCOV_OBJ_DIR)
+	$(CC) $(CFLAGS) $(TEST_FLAGS) $^ -o $@
+
+
+.PHONY: clean_lib
+clean: clean_bin
+	rm -f *.gcda 
+	rm -f *.gcov 
+	rm -f *.gcno 
+	rm -f coverage.info
+	rm -f test
+	rm -f s21_matrix.a
+	rm -rf obj
+	rm -rf tests_obj
+	rm -rf gcov_res
 	rm	-rf	*.o	*.out *.gcno *.gcna	*.html *.gcda *.css	*.exe
-	rm	-rf	*.a $(TST)$(TFILE) *.txt
 
-rebuild:	clean	$(LIB_NAME)
+clean_bin: 
+	rm -f $(MATH_OBJ) 
+	rm -f $(TEST_OBJ) 
+	rm -f $(GCOV_OBJ) 
 
-cppcheck:
-	cppcheck --enable=all --suppress=missingIncludeSystem *.c
-	cp ../materials/linters/CPPLINT.cfg CPPLINT.cfg
-	python3 ../materials/linters/cpplint.py --extensions=c *.h *.c
-	rm -rf ./CPPLINT*
+rebuild: clean clean_lib clean_bin all
 
-docker: clean
-	sh ../materials/build/run.sh
-
-valgrind: test
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose tests/runtest
+cpplint: ${MATRIX_SRC} ${TEST_SRC} *.h
+ifeq ("","$(wildcard ./CPPLINT.cfg)")
+	@cp -f ../materials/linters/CPPLINT.cfg ./CPPLINT.cfg
+endif
+	@!(python3 ../materials/linters/cpplint.py --extensions=c $^ | grep -q :)
+	@rm -f CPPLINT.cfg
+	@!(grep -r '<mattrix.h>' s21*)

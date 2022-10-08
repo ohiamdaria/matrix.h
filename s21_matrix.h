@@ -34,10 +34,8 @@ int s21_inverse_matrix(matrix_t *A, matrix_t *result);
 //  helpers
 void print_matrix(matrix_t *result);
 int check_size(matrix_t *A, matrix_t *B);
-int is_agreed(matrix_t *A, matrix_t *B);
 void submatrix(matrix_t *A, matrix_t *copy, int rows_copy, int columns_copy);
 double counter_determinant(matrix_t *A, int n);
-int check_norm_value(double result);
 void minor(matrix_t *A, matrix_t *minor_matrix);
 void scanf_matrix(matrix_t *result);
 int check_size_one(matrix_t *A);

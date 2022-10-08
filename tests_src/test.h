@@ -1,5 +1,5 @@
-#ifndef TEST
-#define TEST
+#ifndef SRC_TESTS_TEST_H_
+#define SRC_TESTS_TEST_H_
 
 #include "../s21_matrix.h"
 #include <check.h>
@@ -21,4 +21,5 @@ void run_tests(void);
 void run_testcase(Suite *testcase);
 
 double get_rand(double min, double max);
-#endif  //  TEST
+
+#endif  // SRC_TESTS_TEST_H_
